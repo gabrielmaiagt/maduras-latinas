@@ -14,9 +14,9 @@
         extend: {
           colors: {
             primary: {
-              400: '#fb7185',
-              500: '#f43f5e',
-              600: '#e11d48',
+              400: '#EC407A',
+              500: '#E91E63',
+              600: '#C2185B',
             }
           }
         }
@@ -69,13 +69,22 @@
           mujeres increíbles mayores de 30 años se conectan con jóvenes de 18+ en una relación ligera, envolvente y
           ventajosa.
         </p>
-        <div class="w-full max-w-xs mb-8">
-          <a class="w-full block" href="/registro/paso1/">
-            <button
-              class="w-full bg-primary-500 hover:bg-primary-600 rounded-full py-4 px-8 font-bold transition-colors">
-              SOY MAYOR DE 18 AÑOS
-            </button>
-          </a>
+        <div class="w-full max-w-xs mb-2">
+          <button onclick="scrollToBottom()"
+            class="w-full bg-primary-500 hover:bg-primary-600 rounded-full py-4 px-8 font-bold transition-colors shadow-lg">
+            SOY MAYOR DE 18 AÑOS
+          </button>
+        </div>
+
+        <!-- API Localización -->
+        <div id="location-info" class="flex items-center gap-2 text-sm text-gray-400 mb-8">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-primary-500">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span id="location-text">Cargando ubicación...</span>
         </div>
       </div>
     </div>
@@ -335,7 +344,7 @@
       </div>
 
       <!-- CTA Final -->
-      <div class="w-full max-w-xs mb-4 text-center">
+      <div id="cta-final" class="w-full max-w-xs mb-4 text-center">
         <h3 class="text-xl font-bold text-primary-400 mb-2">¿Listo para comenzar a recibir dinero?</h3>
         <p class="text-sm text-gray-300 mb-4">
           Únete a miles de hombres que ya están ganando con Maduras Latinas.
@@ -365,11 +374,41 @@
   <script src="/js/tracking.js"></script>
 
   <script>
+    // Scroll suave até o final
+    function scrollToBottom() {
+      const target = document.getElementById('cta-final');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    // API de Localização
+    async function getLocation() {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+
+        const city = data.city || 'tu ciudad';
+        const country = data.country_name || '';
+
+        // Número aleatório de madames (15-35)
+        const count = Math.floor(Math.random() * 20) + 15;
+
+        const locationText = document.getElementById('location-text');
+        locationText.innerHTML = `Hay <strong class="text-white">${count} mujeres maduras</strong> cerca de ti en <strong class="text-primary-400">${city}</strong>`;
+      } catch (error) {
+        document.getElementById('location-text').innerHTML = 'Hay <strong class="text-white">24 mujeres maduras</strong> esperándote';
+      }
+    }
+
     // Rastreia visualização da landing page
     window.addEventListener('load', function () {
       if (window.MadurasTracking) {
         MadurasTracking.trackPageView('/');
       }
+
+      // Carrega localização
+      getLocation();
     });
 
     // Rastreia cliques em CTAs
