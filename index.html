@@ -385,18 +385,22 @@
     // API de Localização
     async function getLocation() {
       try {
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
+        // Tenta primeira API
+        let response = await fetch('https://ipapi.com/ip_api.php?ip=');
+        let data = await response.json();
+
+        // Se não funcionar, tenta segunda API
+        if (!data || !data.city) {
+          response = await fetch('http://ip-api.com/json/');
+          data = await response.json();
+        }
 
         const city = data.city || 'tu ciudad';
-        const country = data.country_name || '';
-
-        // Número aleatório de madames (15-35)
         const count = Math.floor(Math.random() * 20) + 15;
 
-        const locationText = document.getElementById('location-text');
-        locationText.innerHTML = `Hay <strong class="text-white">${count} mujeres maduras</strong> cerca de ti en <strong class="text-primary-400">${city}</strong>`;
+        document.getElementById('location-text').innerHTML = `Hay <strong class="text-white">${count} mujeres maduras</strong> cerca de ti en <strong class="text-primary-400">${city}</strong>`;
       } catch (error) {
+        console.log('Location API error:', error);
         document.getElementById('location-text').innerHTML = 'Hay <strong class="text-white">24 mujeres maduras</strong> esperándote';
       }
     }
