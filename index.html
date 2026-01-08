@@ -385,20 +385,17 @@
     // API de Localização
     async function getLocation() {
       try {
-        // Tenta primeira API
-        let response = await fetch('https://ipapi.com/ip_api.php?ip=');
-        let data = await response.json();
+        const response = await fetch('http://ip-api.com/json/');
+        const data = await response.json();
 
-        // Se não funcionar, tenta segunda API
-        if (!data || !data.city) {
-          response = await fetch('http://ip-api.com/json/');
-          data = await response.json();
+        if (data && data.status === 'success') {
+          const city = data.city || 'tu ciudad';
+          const count = Math.floor(Math.random() * 20) + 15;
+
+          document.getElementById('location-text').innerHTML = `Hay <strong class="text-white">${count} mujeres maduras</strong> cerca de ti en <strong class="text-primary-400">${city}</strong>`;
+        } else {
+          throw new Error('API failed');
         }
-
-        const city = data.city || 'tu ciudad';
-        const count = Math.floor(Math.random() * 20) + 15;
-
-        document.getElementById('location-text').innerHTML = `Hay <strong class="text-white">${count} mujeres maduras</strong> cerca de ti en <strong class="text-primary-400">${city}</strong>`;
       } catch (error) {
         console.log('Location API error:', error);
         document.getElementById('location-text').innerHTML = 'Hay <strong class="text-white">24 mujeres maduras</strong> esperándote';
